@@ -1020,3 +1020,7 @@ SimulationExperience.tsx에서 첫 화면의 INTERACTIVE FACTORY 제목/설명/�
 루트 Git 저장소/main/origin을 구성하고 .gitignore에 의존성·캐시·IDE 설정·로컬 DB·키 파일·Blender 백업 제외 규칙을 추가했다. 현재 모델 원본 최대 크기는 약6.5MB이므로 일반 Git으로 포함한다. PROJECT_PLAN.md와 README.md에 저장소와 선배포 방향을 반영했다. 최초 커밋과 push의 결과는 후속 항목에 기록한다.
 
 테스트·빌드·린트·앱/브라우저 실행·배포는 수행하지 않았다. 사용자는 GitHub에서 frontend/backend/docs/assets 폴더와 환경변수 예시가 보이고 의존성/실제 .env가 없는지 직접 확인한다. 다음은 업로드 완료 후 호스팅 선택과 frontend 배포다. Vite 개발용 /api 프록시는 운영 배포에 적용되지 않으므로 백엔드 연결 방식은 배포 단계에서 결정한다.
+
+### 업로드 결과
+
+2026-10-12 최초 커밋을 origin/main으로 push하는 명령이 성공했고 로컬 main의 원격 추적이 설정됐다. 프론트·백엔드·문서·원본/웹 자산 업로드 완료. GitHub 화면과 앱 동작의 사용자 확인은 대기이며 실제 배포·도메인 연결은 수행하지 않았다.
