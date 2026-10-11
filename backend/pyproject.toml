@@ -1,0 +1,26 @@
+[project]
+name = "truckworks"
+version = "0.1.0"
+description = "TruckWorks production simulation backend"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.14,<2",
+    "fastapi>=0.115,<1",
+    "langgraph>=1,<2",
+    "openai>=2,<3",
+    "pydantic>=2.10,<3",
+    "pydantic-settings>=2.6,<3",
+    "psycopg[binary]>=3.2,<4",
+    "simpy>=4.1,<5",
+    "sqlalchemy[asyncio]>=2.0,<2.1",
+    "uvicorn>=0.34,<1",
+    "websockets>=15,<17",
+]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/truckworks"]

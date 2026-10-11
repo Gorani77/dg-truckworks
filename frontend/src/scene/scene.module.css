@@ -1,0 +1,98 @@
+.viewport { min-width: 0; border: 1px solid var(--color-border); background: var(--color-viewport); }
+.immersiveCanvas { position: absolute; inset: 0; background: var(--color-viewport); }
+.immersiveCanvas canvas { touch-action: none; }
+.sceneLoading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--color-text-secondary); }
+.immersiveFallback { position: absolute; inset: 120px 16px 150px; overflow: auto; }
+.immersiveFallback > p { padding: 16px; background: var(--color-surface); font-size: 12px; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--color-border); background: var(--color-surface); }
+.toolbar h2 { font-size: 12px; font-weight: 600; }.toolbar > span { display: flex; align-items: center; gap: 10px; font-size: 10px; color: var(--color-text-muted); }.toolbar i { width: 1px; height: 10px; background: var(--color-border); }
+.viewControls { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: flex-end; }
+.viewControls button { width: auto; padding: 6px 10px; margin: 0; font-size: 10px; }
+.canvasContainer { height: clamp(380px, 40vw, 560px); position: relative; overflow: hidden; }
+.canvasContainer canvas { touch-action: none; }
+.binLabel { display: block; padding: 3px 5px; background: var(--color-surface); color: var(--color-text-secondary); white-space: nowrap; font: 9px var(--font-body); border-bottom: 1px solid var(--color-border); }
+.layout { min-height: 460px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; background-image: linear-gradient(#ffffff03 1px, transparent 1px), linear-gradient(90deg, #ffffff03 1px, transparent 1px); background-size: 24px 24px; }
+.coordinateLabel { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-muted); gap: 12px; }
+.coordinateLabel span { font-size: 10px; }
+.route { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin-block: 40px; }
+.route::before { content: ''; position: absolute; top: 73px; left: 6%; right: 6%; height: 18px; border-block: 1px solid #525b65; background: repeating-linear-gradient(90deg, #232a31 0 3px, #15191e 3px 11px); }
+.station { z-index: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; background: #15191ee8; border: 1px solid #303740; padding: 10px 4px; border-radius: 2px; color: #89939f; }
+.station:hover { border-color: #8c96a3; }.station.active { border-color: var(--color-accent); color: var(--color-accent); background: #241f16ed; }
+.stationCode { font-size: 10px; letter-spacing: .5px; }
+.machine { width: 100%; max-width: 95px; height: 96px; fill: #20262c; stroke: currentColor; stroke-width: 1.3; }
+.machine .machineWindow { fill: #121619; }.machine text { fill: currentColor; stroke: none; font: 12px var(--font-body); }
+.stationName { font-size: 11px; color: var(--color-text); white-space: nowrap; }.duration { margin-top: 4px; font-size: 10px; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.productDrawing { display: flex; align-items: center; gap: 18px; align-self: flex-start; padding: 12px 16px; border-left: 1px solid #46515e; background: #15191ec9; }
+.productDrawing svg { width: 170px; max-width: 45%; height: 90px; fill: #46515c; stroke: #99a3ad; stroke-width: 1; }.productDrawing .dimensionLine { fill: none; stroke: #5c6773; }.productDrawing text { fill: #8b97a4; stroke: none; font: 10px var(--font-body); }
+.productDrawing span, .productDrawing strong, .productDrawing small { display: block; }.productDrawing span, .productDrawing small { font-size: 10px; color: var(--color-text-muted); }.productDrawing strong { margin-block: 5px; font-size: 12px; font-weight: 500; }
+.viewportNote { padding: 12px 16px; font-size: 11px; color: var(--color-text-muted); border-top: 1px solid var(--color-border-subtle); }
+.specification { display: grid; grid-template-columns: 1fr 1.3fr 1fr; margin: 0; padding: 14px 16px; border-top: 1px solid var(--color-border); background: var(--color-surface); gap: 8px; }.specification dt { font-size: 10px; color: var(--color-text-muted); }.specification dd { margin: 5px 0 0; font-size: 11px; font-variant-numeric: tabular-nums; }
+@media (min-width: 1550px) { .layout { min-height: 540px; } }
+@media (max-width: 760px) { .layout { min-height: 350px; padding: 14px 10px; }.route { gap: 3px; margin-block: 25px; }.station { padding-inline: 1px; }.machine { height: 78px; }.stationName { font-size: 9px; }.stationCode { font-size: 9px; }.coordinateLabel span { display: none; }.specification { grid-template-columns: 1fr; gap: 12px; } }
+
+
+/* Spatial labels: light footprint, detail only on focus. */
+.sceneLabel { --status-color: var(--color-text-muted); position: relative; min-width: 125px; padding: 9px 11px; border: 1px solid #a8bdcd38; border-radius: 8px; color: var(--color-text); background: linear-gradient(135deg, #21313be8, #0e1821ee); box-shadow: 0 6px 20px #02091140, inset 0 1px #ffffff08; white-space: nowrap; font-family: var(--font-body); text-align: left; }
+.sceneLabel::before { content: ''; position: absolute; width: 1px; height: 13px; background: #b7c8d366; bottom: 100%; left: 20px; }
+.sceneLabel::after { content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #b7c8d3; bottom: calc(100% + 12px); left: 18.5px; }
+.sceneLabel[data-status='PROCESSING'] { --status-color: var(--scene-processing); }
+.sceneLabel[data-status='FAULTED'] { --status-color: var(--scene-fault); border-color: #d8787088; }
+.sceneLabel[data-status='BLOCKED'] { --status-color: var(--color-accent); }
+.sceneLabel[data-selected='true'] { border-color: #e9c07db0; box-shadow: 0 6px 22px #02091155, inset 0 1px #e9c07d22; }
+.sceneLabel[data-related='true'] { border-color: var(--color-ai); }
+.markerHeading { display: flex; align-items: center; gap: 9px; }
+.markerHeading > svg { color: var(--color-ai); margin-left: 2px; }
+.markerNumber { display: grid; place-items: center; width: 26px; height: 29px; border-radius: 4px; border: 1px solid #a8bdcd29; background: #a8bdcd0b; font-size: 12px; font-weight: 550; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.sceneLabel[data-selected='true'] .markerNumber { color: var(--color-accent); border-color: #e9c07d40; background: #e9c07d12; }
+.markerHeading strong { display: block; font-size: 11px; font-weight: 550; letter-spacing: -.2px; }
+.markerStatus { display: flex; align-items: center; gap: 5px; color: var(--status-color); font-size: 9px; margin-top: 3px; }
+.markerStatus i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+.markerDetail { display: flex; align-items: center; gap: 9px; margin-top: 9px; padding-top: 7px; border-top: 1px solid var(--color-border); font-size: 9px; color: var(--color-text-muted); }
+.markerDetail b { color: var(--color-text-secondary); font-weight: 500; margin-left: 2px; }
+.markerDetail strong { margin-left: auto; font-size: 9px; color: var(--status-color); font-weight: 500; }
+.markerProgress { height: 2px; margin-top: 7px; overflow: hidden; border-radius: 2px; background: #c4dae015; }
+.markerProgress i { display: block; height: 100%; background: var(--status-color); }
+.markerEvidence { display: block; margin-top: 6px; font-size: 9px; color: var(--color-ai); }
+.zoneLabel { display: flex; align-items: center; gap: 13px; padding: 13px 15px; min-width: 220px; border: 1px solid #acc4d13b; border-radius: 9px; background: var(--gradient-panel); box-shadow: var(--shadow-hud); color: var(--color-text); text-align: left; font-family: var(--font-body); transition: border-color var(--motion-fast), transform var(--motion-fast); }
+.zoneNumber { display: grid; place-items: center; align-self: stretch; min-width: 34px; border-right: 1px solid var(--color-border); padding-right: 12px; color: var(--color-text-muted); font-size: 19px; font-weight: 350; }
+.zoneLabel > div > span { display: block; font-size: 8px; color: var(--color-text-muted); letter-spacing: 1px; margin-bottom: 3px; }
+.zoneLabel strong { display: block; font-size: 12px; font-weight: 550; }
+.zoneLabel small { display: block; font-size: 9px; color: var(--color-text-muted); margin-top: 4px; }
+.zoneLabel > svg { color: var(--color-text-muted); margin-left: auto; }
+.zoneLabel:hover, .zoneLabel[data-primary='true'] { border-color: #e9c07d80; }
+.zoneLabel:hover { transform: translateY(-2px); }
+.zoneLabel:hover .zoneNumber, .zoneLabel[data-primary='true'] .zoneNumber, .zoneLabel[data-primary='true'] > svg { color: var(--color-accent); }
+.binLabel { border-radius: 5px; padding: 7px 10px; border: 1px solid var(--color-border); background: var(--color-hud); font-size: 10px; }
+.sceneLoading { background: radial-gradient(ellipse at center, #233646, var(--color-viewport) 65%); font-size: 13px; letter-spacing: 1px; }
+.immersiveFallback { border: 1px solid var(--color-border); border-radius: var(--radius-panel); box-shadow: var(--shadow-hud); background: var(--color-hud); }
+.immersiveFallback > p { padding: 15px 20px; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border); }
+.toolbar { background: var(--gradient-panel); padding: 14px 18px; }.toolbar h2 { font-size: 13px; }
+.viewControls button { border-radius: var(--radius-control); min-height: 34px; font-size: 11px; }
+.layout { background-color: #101b26; background-size: 32px 32px; }
+.station { border-radius: 8px; padding: 13px 6px; border-color: var(--color-border); background: var(--gradient-panel); box-shadow: 0 5px 14px #0002; }
+.station.active { border-color: var(--color-accent); background: linear-gradient(140deg, #423928, #17212c); }
+.stationName { font-size: 12px; }.stationCode { color: var(--color-text-secondary); }.duration { margin-top: 7px; }
+.productDrawing { border: 1px solid var(--color-border); border-radius: 9px; background: var(--color-glass); }
+.specification { gap: 15px; padding: 18px; }.specification dd { font-size: 13px; }
+@media (max-width: 760px) { .immersiveFallback { inset: 220px 16px 160px; }.stationName { font-size: 10px; }.zoneLabel { min-width: 164px; padding: 9px 11px; gap: 9px; }.zoneNumber { font-size: 16px; min-width: 25px; padding-right: 8px; }.zoneLabel strong { font-size: 10px; }.zoneLabel small { display: none; }.sceneLabel { min-width: 107px; padding: 7px 8px; }.markerNumber { width: 22px; height: 26px; font-size: 10px; }.markerHeading { gap: 6px; }.markerHeading strong { font-size: 10px; } }
+@media (max-height: 450px) { .immersiveFallback { inset: 130px 16px 100px; } }
+@media (prefers-reduced-motion: reduce) { .zoneLabel { transition: none; } }
+.loadingContent { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 28px; }.loadingContent > svg { color: var(--color-accent); margin-bottom: 7px; }.loadingContent strong { font-size: 18px; font-weight: 500; color: var(--color-text); letter-spacing: -.5px; }.loadingContent span { font-size: 11px; color: var(--color-text-muted); letter-spacing: 0; }.loadingContent > i { width: 120px; height: 2px; margin-top: 10px; background: linear-gradient(90deg, transparent, var(--color-accent), transparent); animation: loader-pulse 1.5s ease-in-out infinite; }
+@keyframes loader-pulse { 50% { opacity: .2; } }
+@media (prefers-reduced-motion: reduce) { .loadingContent > i { animation: none; } }
+
+.campusMarker { display: grid; grid-template-columns: auto auto; align-items: center; gap: 7px; width: max-content; max-width: none; white-space: nowrap; word-break: keep-all; writing-mode: horizontal-tb; padding: 7px 10px; border: 1px solid var(--color-border); border-radius: 4px; background: #111e28ed; color: var(--color-text-secondary); font: 10px var(--font-body); text-align: left; }
+.campusMarker > span { color: var(--color-text-muted); font-size: 9px; }
+.campusMarker > strong { font-size: 11px; font-weight: 500; }
+.campusMarker > small { grid-column: 1 / -1; color: var(--color-text-muted); font-size: 9px; }
+.campusMarker[data-active='true'], .campusMarker:hover { border-color: var(--color-accent); color: var(--color-text); }
+.campusMarker[data-live='true'] > span { color: var(--color-accent); }
+.campusMap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 16px; }
+.campusMap button { display: flex; flex-direction: column; gap: 6px; padding: 14px; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); text-align: left; font: inherit; }
+.campusMap button[aria-pressed='true'] { border-color: var(--color-accent); }
+.campusMap button > span, .campusMap button > small { color: var(--color-text-muted); font-size: 10px; }
+.campusMap button > strong { font-size: 12px; font-weight: 500; }
+@media (max-width: 760px) { .campusMarker { max-width: none; padding: 5px 7px; gap: 4px; } .campusMarker > strong { font-size: 9px; } .campusMap { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+@media (max-width: 760px) { .campusMarker[data-compact='true'] > strong { display: none; } .campusMarker[data-compact='true'] { min-width: 26px; grid-template-columns: auto; justify-content: center; } }
+

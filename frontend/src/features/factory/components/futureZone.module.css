@@ -1,0 +1,12 @@
+.zone { padding: var(--space-5); }
+.status { display: flex; align-items: center; gap: 8px; color: var(--color-accent); font-size: 11px; }
+.zone h3 { margin: 22px 0 14px; font-size: 23px; font-weight: 500; line-height: 1.5; letter-spacing: -.6px; }
+.zone > p, .boundary p { font-size: 13px; line-height: 1.9; color: var(--color-text-secondary); word-break: keep-all; }
+.zone h4 { font-size: 12px; font-weight: 500; margin: 28px 0 12px; color: var(--color-text-muted); }
+.zone ol { list-style: none; padding: 0; margin: 0; }
+.zone li { display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid var(--color-border); font-size: 13px; }
+.zone li > span { color: var(--color-text-muted); font-size: 10px; }
+.boundary { border-left: 2px solid var(--color-accent); padding: 4px 0 4px 14px; margin: 28px 0; }
+.boundary strong { font-size: 12px; font-weight: 500; }
+.boundary p { margin-top: 8px; font-size: 12px; }
+.zone > button { width: 100%; margin-top: 10px; }
