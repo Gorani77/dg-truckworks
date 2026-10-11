@@ -3,7 +3,6 @@ import type { ComponentRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { MOUSE, OrthographicCamera, Vector3 } from 'three'
-import { getFactoryZone } from './factoryCampus'
 import type { SpatialFocus } from './spatialNavigation'
 
 export function SpatialCamera({ focus, target, resetView }: {
@@ -13,23 +12,30 @@ export function SpatialCamera({ focus, target, resetView }: {
   const controls = useRef<ComponentRef<typeof OrbitControls>>(null)
   const moving = useRef(true)
   const manualView = useRef(false)
+  const previousReset = useRef<number | null>(null)
+  const framing = useRef({ zoom: 1, offset: new Vector3(28, 55, 65) })
   const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [x, y, z] = target
   const destination = useMemo(() => new Vector3(x, y, z), [x, y, z])
-  const close = focus.kind === 'station' || focus.kind === 'part'
-  const span = focus.kind === 'overview' ? 120 : close ? 11 : getFactoryZone(focus.kind)?.span ?? 29
-  const zoom = Math.max(1, Math.min(size.width / span, size.height / (span * 0.65)))
-  const offset = useMemo(() => new Vector3(close ? 5 : 28, close ? 8 : 55, close ? 10 : 65), [close])
+  const initialZoom = Math.max(1, Math.min(size.width / 120, size.height / (120 * 0.65)))
   useLayoutEffect(() => {
+    if (!(camera instanceof OrthographicCamera) || !controls.current) return
+    const reset = previousReset.current === null || previousReset.current !== resetView
+    previousReset.current = resetView
+    framing.current = {
+      zoom: reset ? initialZoom : camera.zoom,
+      offset: reset ? new Vector3(28, 55, 65) : camera.position.clone().sub(controls.current.target),
+    }
     manualView.current = false
     moving.current = true
     invalidate()
-  }, [focus, resetView, zoom, invalidate])
+  }, [focus, resetView, initialZoom, camera, invalidate])
   useLayoutEffect(() => {
     if (!manualView.current) { moving.current = true; invalidate() }
   }, [destination, invalidate])
   useFrame((_, delta) => {
     if (!moving.current || !controls.current || !(camera instanceof OrthographicCamera)) return
+    const { zoom, offset } = framing.current
     const position = destination.clone().add(offset)
     const weight = reducedMotion ? 1 : 1 - Math.exp(-5 * Math.min(delta, 0.1))
     camera.position.lerp(position, weight)

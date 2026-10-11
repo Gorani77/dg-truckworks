@@ -18,7 +18,7 @@ export function useSceneNavigation() {
     return () => window.removeEventListener('keydown', escape)
   }, [panel])
   return { focus, panel, resetView, show2D, setPanel,
-    navigate: (next: SpatialFocus) => { setFocus(next); setResetView((value) => value + 1) },
-    resetCamera: () => setResetView((value) => value + 1),
+    navigate: (next: SpatialFocus) => setFocus(next),
+    resetCamera: () => { setFocus({ kind: 'overview' }); setResetView((value) => value + 1) },
     toggle2D: () => setShow2D((value) => !value) }
 }

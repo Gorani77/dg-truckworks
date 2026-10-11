@@ -59,7 +59,7 @@ export function SimulationHud({ state, connection, sending, focus, stations, onN
     </div>
     <div className={styles.bottomBar}>
       <div className={styles.viewActions} aria-label="시점 조작">
-        <button onClick={onResetView}><Icon name="target" /><span>시점 복귀</span></button>
+        <button onClick={onResetView} title="처음 접속했을 때의 공장 전체 시점으로 초기화"><Icon name="target" /><span>시점 초기화</span></button>
         <button onClick={onToggle2D} aria-pressed={show2D}><Icon name="cube" /><span>{show2D ? '3D 보기' : '2D 보기'}</span></button>
       </div>
       {preview ? <div className={styles.futureTransport}><span>전시 구역 · 동작 구현 예정</span><strong>{zone?.title}</strong><button onClick={() => onNavigate({ kind: 'line' })}>차체 생산라인으로 <Icon name="arrow" size={16} /></button></div> : <div className={styles.transport} aria-label="생산 조작">
