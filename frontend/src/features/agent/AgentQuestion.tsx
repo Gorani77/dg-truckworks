@@ -4,7 +4,7 @@ import { useAgentQuestion } from './useAgentQuestion'
 import styles from './agent.module.css'
 
 export function AgentQuestion({ runId, stationId, onSelectStation }: {
-  runId?: string; stationId: string; onSelectStation: (id: string) => void
+  runId?: string; stationId?: string; onSelectStation: (id: string) => void
 }) {
   const [question, setQuestion] = useState('생산이 멈추거나 부품이 대기하는 이유를 알려줘.')
   const agent = useAgentQuestion()

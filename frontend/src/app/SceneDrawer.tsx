@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 import styles from './experience.module.css'
 import { Icon } from '../components/Icon'
 
-export function SceneDrawer({ title, open, wide, onClose, children }: {
-  title: string; open: boolean; wide?: boolean; onClose: () => void; children: ReactNode
+export function SceneDrawer({ title, open, wide, side = 'right', id, onClose, children }: {
+  title: string; open: boolean; wide?: boolean; side?: 'left' | 'right'; id?: string; onClose: () => void; children: ReactNode
 }) {
   const heading = useRef<HTMLHeadingElement>(null)
   useEffect(() => {
@@ -13,8 +13,8 @@ export function SceneDrawer({ title, open, wide, onClose, children }: {
     heading.current?.focus()
     return () => { if (previous?.isConnected) previous.focus({ preventScroll: true }) }
   }, [open, title])
-  return <aside className={`${styles.drawer} ${wide ? styles.wideDrawer : ''}`} hidden={!open} aria-label={title}>
-    <header className={styles.drawerHeading}><div><span className={styles.drawerKicker}>TRUCKWORKS / {wide ? '기록 보관함' : '공장 인스펙터'}</span><h2 ref={heading} tabIndex={-1}>{title}</h2></div><button onClick={onClose} aria-label={`${title} 닫기`}><Icon name="close" size={20} /></button></header>
+  return <aside id={id} className={`${styles.drawer} ${wide ? styles.wideDrawer : ''} ${side === 'left' ? styles.leftDrawer : ''}`} hidden={!open} aria-label={title}>
+    <header className={styles.drawerHeading}><div><h2 ref={heading} tabIndex={-1}>{title}</h2></div><button onClick={onClose} aria-label={`${title} 닫기`}><Icon name="close" size={20} /></button></header>
     <div className={styles.drawerBody}>{children}</div>
   </aside>
 }

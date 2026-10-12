@@ -10,7 +10,7 @@ export function useAgentQuestion() {
   const request = useRef<AbortController | null>(null)
   useEffect(() => () => { request.current?.abort() }, [])
 
-  async function ask(question: string, runId: string, stationId: string) {
+  async function ask(question: string, runId: string, stationId?: string) {
     if (loading || !question.trim()) return
     request.current?.abort()
     const controller = new AbortController()

@@ -2,7 +2,7 @@
 .menu > p, .future p { font-size: 13px; line-height: 1.9; color: var(--color-text-secondary); }
 .menu button { display: flex; align-items: center; gap: 14px; width: 100%; border: 0; background: none; color: var(--color-text); text-align: left; font: inherit; }
 .menu button > svg:last-child { margin-left: auto; color: var(--color-text-muted); }
-.overview { padding: 18px 0; margin-top: 12px; font-size: 13px !important; color: var(--color-accent) !important; }
+.overview { padding: 18px 0; margin-top: 12px; font-size: 13px !important; color: var(--color-text) !important; }
 .menu ol { list-style: none; padding: 0; margin: 0; }
 .menu li { border-top: 1px solid var(--color-border); }
 .menu li button { padding: 15px 8px; }
@@ -11,6 +11,8 @@
 .menu strong { font-size: 14px; font-weight: 500; }
 .menu small { display: block; font-size: 11px; color: var(--color-text-muted); margin-top: 6px; }
 .future { padding-top: 24px; margin-top: 20px; border-top: 1px solid var(--color-border); }
-.future > span { color: var(--color-ai); font-size: 11px; }
+.future > span { color: var(--color-text-secondary); font-size: 11px; }
 .future h3 { font-size: 18px; font-weight: 500; line-height: 1.6; margin: 14px 0; }
-.future button { padding-top: 20px; color: var(--color-ai); font-size: 12px; }
+.future button { padding-top: 20px; color: var(--color-text-secondary); font-size: 12px; }
+.stationDirectory { margin-top: var(--space-5); border-top: 1px solid var(--color-border); }
+.stationDirectory > summary { padding: var(--space-4) 0; color: var(--color-text-secondary); font-size: 12px; cursor: pointer; }

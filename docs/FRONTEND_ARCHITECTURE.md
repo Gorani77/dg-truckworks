@@ -1,19 +1,21 @@
 # 프론트엔드 구조
 
-## 2026-10-11 현재 화면 구조
+## 2026-10-12 현재 화면 구조
+
+사용자 A안 선택으로 환경 조작·장면 관찰·공장 분석을 분리했다. SimulationExperience는 useStationSelection을 장면/환경 대상으로 각각 사용한다. 환경 대상 변경은 useSceneNavigation을 호출하지 않으며, 화면의 생산 시작도 위치를 바꾸지 않는다. FactoryEnvironmentControls는 고장·복구, ProductionControls는 생산/정지/재개/초기화만 담당하고 왼쪽 SceneDrawer에 조합한다. 기존 서버 명령과 생산 규칙은 유지한다. 코드 작성 완료·사용자 확인 대기.
 
 사용자 승인으로 상시 패널 대시보드를 전체 화면 공장 탐색으로 변경했다. 서버 생산 상태의 책임은 유지하고 시점·선택·정보창·안내 체험을 별도 UI 상태로 관리한다. 코드 작성 완료·사용자 확인 대기다.
 
 - `app/FactoryDashboard.tsx`: 기존 useFactoryConnection으로 서버 연결, 실행 ID별 SimulationExperience 수명 관리. 새 실행/연결 손실은 이전 분석과 안내 상태를 정리한다.
-- `app/SimulationExperience.tsx`: 장면·HUD·선택·분석·안내·기록을 조합한다. 부품 추적 시 현재 부품 위치의 설비 맥락을 분석에 전달한다.
+- `app/SimulationExperience.tsx`: 장면·HUD·선택·분석·안내·기록을 조합한다. 부품 추적/설비 선택과 환경 조작 대상을 분리하며 장면의 설비 맥락을 AI 요청에 자동 전달하지 않는다.
 - `app/useSceneNavigation.ts`, `SimulationHud.tsx`, `SceneDrawer.tsx`, `experience.module.css`: 공간 선택, 화면 위 조작, Esc, 정보창 초점과 내부 스크롤. 정보창은 모달이 아니므로 장면/조작과 함께 사용할 수 있다.
 - `scene/ImmersiveViewport.tsx`, `spatialNavigation.ts`: 지연 로딩·2D/오류 대체·명시적인 시점 종류. 기존 FactoryViewport는 이전 화면용 파일로 남아 있으며 현재 진입에서는 사용하지 않는다.
 - `scene/SpatialCamera.tsx`: 시점/부품 좌표를 부드럽게 따라가는 직교 카메라. 수동 조작은 자동 추적을 멈추고 시점 초기화/새 선택으로 복귀. 감소된 모션은 즉시 전환. 생산 시간은 진행시키지 않는다.
 - `scene/FactoryEnvironment.tsx`: 절개된 공장 바닥/벽·구역 표지·배경 선반·조립 전시 모형. 재고/조립 실적으로 취급하지 않는다.
 - `scene/FactoryScene.tsx`, `StationModel.tsx`: 기존 생산/부품 모델과 새 환경·카메라 연결. 선택과 서버 고장 상태, 답변 관련 설비 강조를 구분한다. Html 표지는 화면 UI보다 낮은 층에 둔다.
 - `features/factory/hooks/useGuidedTour.ts`, `components/GuidedExperience.tsx`: 순수 reducer가 실제 상태·분석 버전으로 체험 단계를 판정한다. 요청 중/실패는 수신 성공으로 간주하지 않는다.
-- `features/factory/components/SceneSelection.tsx`: 선택 설비/부품/구역 정보와 조작. 기존 상세 컴포넌트를 재사용한다.
-- `features/agent/SceneAgentPanel.tsx`: 상위 useAgentQuestion의 상태로 질문·답변·관련 설비·접힌 근거 표시. 기존 AgentPanel은 showQuestion=false로 수동 자료 조회를 재사용한다. AI 창 닫기는 요청 취소가 아니며 실행 수명 종료는 기존 abort 정리를 수행한다.
+- `features/factory/components/SceneSelection.tsx`: 선택 설비/부품/구역 정보만 표시한다. 고장·복구·AI·차체 추적 버튼을 제거하고 기존 상세 컴포넌트를 재사용한다.
+- `features/agent/SceneAgentPanel.tsx`: 상위 useAgentQuestion의 상태로 공장 질문·답변·관련 설비·접힌 근거를 표시한다. ask(question, runId)는 station_id 없이 기존 API로 전송한다. 백엔드의 선택적 station_id와 공장 기준 상태 제공을 활용한다. AgentPanel은 showQuestion=false, 설비 필터 없이 공장 현황/이벤트/대기·예약과 부품 이력을 수동 조회한다. AI 창 닫기는 요청 취소가 아니며 실행 수명 종료는 기존 abort 정리를 수행한다.
 - 기존 ProductionControls·EventLog·HistoryPanel·AnalysisHistoryPanel은 요청한 정보창에서 사용한다. 과거 기록은 현재 장면 상태를 변경하지 않는다.
 
 자료 흐름: WebSocket → useFactoryConnection → SimulationExperience → 3D/HUD. 사용자 선택 → useSceneNavigation → SpatialCamera/선택 정보창. 질문 → 기존 분석 API → useAgentQuestion → SceneAgentPanel + 실제 관련 설비 ID 강조. 확인 절차는 IMMERSIVE_EXPERIENCE.md를 따른다.

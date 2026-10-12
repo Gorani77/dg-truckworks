@@ -12,7 +12,7 @@ export function StationMarker({ station, state, selected, expanded, related, pro
     <div className={styles.markerHeading}>
       <span className={styles.markerNumber} aria-label={station.id}>{station.id.replace('ST-', '')}</span>
       <div><strong>{station.name}</strong><span className={styles.markerStatus}><i />{state ? stationStatusLabels[state.status] : '수신 대기'}</span></div>
-      {related && <Icon name="spark" size={13} />}
+      {related && <Icon name="analysis" size={13} />}
     </div>
     {state && expanded && <div className={styles.markerDetail}>
       <span>입력 <b>{state.queued_part_ids.length}</b></span><span>예약 <b>{state.reserved_part_ids.length}</b></span>

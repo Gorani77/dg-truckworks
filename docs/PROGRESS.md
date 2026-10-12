@@ -4,6 +4,8 @@
 
 ## 현재 상태
 
+최신 후속 상태(2026-10-12): 사용자 A안 선택에 따라 좌측 공장 환경·정보 전용 상세·공장 단위 AI 분석·상단 읽기 전용 위치 표시의 코드와 문서를 작성했다. 사용자 화면/동작 확인 대기이며 환경 조건에 따른 고장 엔진은 후속 설계다. 확인 방법은 FACTORY_ENVIRONMENT_UI.md를 따른다. 아래와 이전 기록의 과거 미확인 항목은 유지한다.
+
 - 단계: 방문자별 공장/이력·유휴30분 정리까지 코드 작성 완료에 이어 로컬 README·소개/시연 안내 초안 작성 완료. 사용자 내용 검토·DB 준비/설치/마이그레이션·새 기능 확인·촬영 대기. Git과 일부 기반·단계0 세부 명세는 미완료.
 - 첫 공개 범위: B — 차체 생산라인 + 읽기 전용 분석 에이전트.
 - 차체 외형: 단순화한 프레임형. 긴 프레임 두 줄과 가로 연결부를 표현하고 전체를 하나의 생산 부품으로 취급.
@@ -1039,3 +1041,73 @@ SimulationExperience.tsx에서 첫 화면의 INTERACTIVE FACTORY 제목/설명/�
 ## 2026-10-12 (Asia/Seoul) — 시점 수정 GitHub 업데이트
 
 사용자가 업데이트한 내용을 Git에 올리도록 요청했다. 시점 관련 코드 3개와 계획·진행·학습 문서 3개를 672c614 (fix: preserve camera zoom on selection and reset initial view)로 커밋하고 Gorani77/dg-truckworks의 origin/main으로 push하는 명령이 성공했다. 업로드 완료와 앱 동작 확인은 별개이며 테스트·빌드·린트·실행 검증은 수행하지 않았다. 사용자는 GitHub main의 변경과 앞 절의 시점 조작 항목을 직접 확인한다. 다음은 사용자 동작 피드백 반영이다.
+
+## 2026-10-12 (Asia/Seoul) — 공장 환경 중심 개편 요청 정리
+
+### 요청 방향과 이유
+
+사용자는 고장·복구를 좌측 공장 환경 메뉴에서 조작하고 설비 상세는 정보만 표시하도록 요청했다. 설비별 AI 버튼을 제거하고 공장 문제 원인 분석으로 연결하며, 현재 탐색 위치는 상단에서 클릭한 위치만 표시한다. 장기 목표는 환경 조건 조정 → 시뮬레이션 중 이상 발생 → AI 원인 분석이다. 조작·관찰·분석의 역할을 분리하는 요청이다.
+
+### 수행 작업과 상태
+
+계획·진행 기록과 SimulationExperience, SimulationHud, SceneSelection, SceneAgentPanel, useAgentQuestion 및 백엔드 분석 입력 코드를 읽었다. 프론트의 분석 요청은 선택 설비를 전달하지만 백엔드 AnalysisQuestion.station_id는 선택 항목이다. 공장 분석 진입은 기존 API를 활용할 여지가 있고, 환경에 따른 고장 원인 모델은 별도 설계가 필요하다. PROJECT_PLAN.md 본문/변경 이력과 INTERVIEW_STUDY.md에 요청 방향·구현 전 상태를 기록했다. 앱 코드는 변경하지 않았다.
+
+### 선택 대기·다음 작업
+
+A(추천): 기존 기능으로 좌측 환경 메뉴·정보 전용 상세·공장 분석·상단 위치 표시를 먼저 개편하고 환경 시뮬레이션은 후속 설계한다. B: 환경 종류와 인과 규칙·관측 데이터를 먼저 설계한 후 화면/엔진을 함께 개편한다. 두 안은 제안이며 선택 미완료다. 온도·부하 등 구체 항목과 임계값, AI 자동 호출은 확정하지 않았다. 사용자 선택 후 해당 범위를 구현한다.
+
+테스트·빌드·린트·앱 실행·브라우저 검증은 하지 않았다. 지금은 범위 선택만 필요하며 구현 후 사용자가 환경 메뉴의 조작, 상세창의 정보 전용 표시, 선택 설비에 종속되지 않는 분석 요청, 상단 위치 표시를 직접 확인하도록 절차를 제공한다. 기존 사용자 확인 대기 항목은 유지한다.
+
+## 2026-10-12 (Asia/Seoul) — 공장 환경 개편 A안 구현
+
+### 확정된 결정과 이유
+
+사용자가 A안부터 진행하도록 선택했고 한도 충전 후 미완료 작업 마무리를 요청했다. 기존 고장·복구와 분석 API를 활용해 화면 역할을 먼저 분리하고, 환경 조건이 이상을 유발하는 엔진은 후속 설계로 남긴다. 장면에서 관찰하는 설비를 바꿔도 조작 대상이 바뀌지 않도록 두 선택 상태를 분리한다.
+
+### 수행한 작업과 파일
+
+- app/SimulationHud.tsx·SceneDrawer.tsx·experience.module.css: 좌측 환경 메뉴와 왼쪽 정보창, 상단 읽기 전용 선택 위치, 공통 AI 공장 분석. 기존 위치 드롭다운/상위 이동 버튼과 하단 생산 설정 진입을 제거했다. 전시 구역에서도 차체 라인 분석을 열 수 있도록 범위를 명시했다.
+- app/SimulationExperience.tsx: 환경 대상에 독립 useStationSelection을 사용하고 고장/복구는 환경 컴포넌트에서만 연결했다. 생산 시작과 환경 대상 변경은 장면 위치를 바꾸지 않는다. 안내 체험은 환경 메뉴로 안내하고 직접 고장·복구하지 않는다. 환경 메뉴 내 오류 표시와 안내 체험 조합을 작성했다.
+- features/factory/components/FactoryEnvironmentControls.tsx 신규: 대상 선택·실제 수신 상태·고장/복구·기존 활성 조건. ProductionControls는 생산 명령만 담당한다. SceneSelection의 고장/복구/AI/차체 추적 버튼, FutureZoneDetails의 비활성 실행 버튼을 제거했다. GuidedExperience·CampusMenu·ImmersiveViewport의 접근/설명도 맞췄다. 키보드로 상세 정보를 열 수 있도록 공장 지도 안에 설비 목록을 제공한다.
+- features/agent/SceneAgentPanel.tsx·useAgentQuestion.ts·AgentPanel.tsx·AgentQuestion.tsx: 분석 stationId를 선택 입력으로 두고 현재 화면은 미전달한다. 수동 공장 이벤트/대기 조회도 설비 필터 없이 요청한다. 백엔드의 기존 선택적 입력을 활용하며 서버 엔진/API/프롬프트는 변경하지 않았다.
+- PROJECT_PLAN.md·DESIGN.md·FRONTEND_ARCHITECTURE.md의 현재 기준, DEMO_GUIDE.md의 현행 경로, UI_CHECK_GUIDE.md·IMMERSIVE_EXPERIENCE.md의 최신 안내 연결, FACTORY_ENVIRONMENT_UI.md와 학습44단계를 작성했다.
+
+### 상태·사용자 확인 대기·다음 작업
+
+코드·문서 작성 완료, 사용자 화면/동작/분석 품질 확인 대기. 테스트·빌드·린트·앱/서버 실행·브라우저 검증·AI 호출·커밋·푸시·배포는 수행하지 않았다. 새 의존성·DB 변경·센서 데이터·환경 고장 규칙·AI 자동 호출은 없다.
+
+사용자는 FACTORY_ENVIRONMENT_UI.md에 따라 환경에서 ST-02를 선택하고 장면의 다른 설비를 본 뒤에도 조작 대상이 유지되는지, 상세에 명령 버튼이 없는지, 고장→공장 분석→복구가 가능한지 확인한다. 상단 텍스트 위치, 선택 설비 없는 분석 요청, 전시 범위 안내, 안내 체험·키보드·2D·작은 화면·연결 오류도 직접 확인한다. 필요한 build/lint 명령은 안내 문서에 있으며 실행하지 않았다. 다음은 사용자 실제 피드백 반영 후 환경 항목·인과 규칙·관측 데이터 설계다. 이전 사용자 확인 대기는 그대로 유지한다.
+
+## 2026-10-12 (Asia/Seoul) — 실제 서비스 참고 UI 표현 정돈
+
+### 요청·결정과 이유
+
+사용자가 AI 생성물처럼 느껴지는 전체 UI의 색감·화살표·문구를 실제 서비스 참고로 다듬도록 요청했다. 기존 공장 환경/관찰/분석 역할을 유지하면서 표현을 수정했다. Linear, Vercel Geist, 토스 공식 웹 문서를 검색·읽었다. 구체적인 팔레트·배치 선호는 사용자 확인 대기이며 제품 화면 검증 완료로 기록하지 않는다.
+
+### 수행 작업과 관련 파일
+
+공통 tokens.css, button.module.css와 app/experience.module.css에 중성 차콜·단색 표면·절제된 반경과 그림자, 넓은 화면 상하단 정렬을 작성했다. SimulationHud/SimulationExperience/SceneDrawer의 장식·반복 문구를 줄였다. SceneAgentPanel/AgentPanel 및 agent.module.css에서 질문·결과 표시와 문구를 정돈하고 분석용 SVG를 추가했다. 공장 지도·안내 체험·전시 상세·환경 조작·생산 수량과 관련 CSS, 장면 표지·로딩 표현도 맞췄다. PROJECT_PLAN.md의 현재 기준/변경 기록, DESIGN.md의 현행 표현 기준, UI_REFINEMENT.md의 출처·적용 방식·확인 절차, INTERVIEW_STUDY.md 45단계를 작성했다.
+
+### 사용자 확인 대기와 다음 작업
+
+코드·문서 작성 완료. 테스트·빌드·린트·앱 실행·브라우저 검증·AI 호출·커밋·푸시·배포는 수행하지 않았다. 생산 엔진/API·카메라·3D 자산·의존성은 변경하지 않았다. UI_REFINEMENT.md에 따라 넓은/좁은/낮은 화면 정렬, 정보창 스크롤, 생산/환경/분석 조작, 2D와 키보드 초점을 사용자가 직접 확인한다. 기대 결과는 절제된 공통 표면과 읽기 쉬운 문구, 기존 기능 유지다. 다음은 실제 화면 피드백 반영이며 이전 미확인 항목은 유지한다.
+
+## 2026-10-12 (Asia/Seoul) — 프론트 배포 사용자 보고·백엔드 배포 상담
+
+사용자가 Vercel 프론트 배포 및 도메인 연결 완료를 알리고 EC2 백엔드 배포 여부와 방법을 질문했다. 계획서의 호스팅 상태와 현재 단계에 이 보고를 반영했다. backend README·compose.yaml·환경변수 예시·VisitorRegistry·세션 처리 및 frontend API 코드를 읽고 AWS/FastAPI/Render/Nginx 공식 문서를 참고해 선택지를 안내했다.
+
+EC2에 HTTPS 프록시·FastAPI 단일 프로세스·PostgreSQL을 구성하는 추천안과 관리형 Render 대안은 제안이며 사용자 선택 전이다. 현재 실시간 공장은 프로세스 메모리에 있어 여러 worker/replica 사용 시 상태가 분리되며 서버 재시작 시 실행 상태가 초기화된다. api 서브도메인을 사용하면 상대 HTTP/WS 주소와 same-origin credentials를 변경하고 CORS·Secure 쿠키를 구성해야 한다. 현재 compose는 로컬 DB만 포함하므로 운영 앱/프록시 배포 구성을 별도로 준비해야 한다.
+
+수행 작업은 코드·문서 읽기와 계획/진행 기록 갱신이다. 배포 설정 구현·AWS 리소스 생성·테스트·빌드·린트·실행·브라우저 검증은 수행하지 않았다. 다음 작업은 사용자 호스팅 선택 후 구체적인 설정 준비다. 배포 후 사용자가 HTTPS API/WS 연결, 방문자 쿠키 유지, 생산 조작·AI 분석·DB 이력 저장을 직접 확인하며 정상 연결과 방문자별 상태 분리를 기대한다. 기존 사용자 확인 대기는 유지한다. 이번 상담에는 구현·설계 확정이 없어 학습 문서는 추가하지 않았다.
+
+## 2026-10-12 (Asia/Seoul) — Render 무료 구성 선택·배포 준비 코드
+
+사용자가 Render를 선택했고 추가 답변으로 프론트 https://dg-truckworks.site 와 Render 무료 PostgreSQL 체험을 확정했다. 무료 DB의 생성 후 30일 만료를 전제로 하며 장기 DB/유료 전환은 선택하지 않았다. HTTPS API 서브도메인 api.dg-truckworks.site 로 같은 사이트의 쿠키를 활용하도록 준비했다.
+
+frontend/src/api/url.ts를 추가해 HTTP와 WebSocket의 VITE_API_ORIGIN 처리를 공통화했다. session.ts에서 credentials: include와 배포 origin의 세션 준비 120초 대기를 적용했다. factoryStream.ts와 frontend/.env.example을 맞췄다. 로컬 origin 미설정은 기존 프록시와 5초 대기를 사용한다. 기존 재연결 로직은 유지하며 생산/AI 명령 자동 재실행은 추가하지 않았다. backend/api/app.py의 credential CORS를 활성화했다. backend/.python-version과 render-start.sh에서 Python 3.12·uv 잠금 의존성·시작 전 migration·worker 1개 실행을 준비했다. RENDER_DEPLOYMENT.md와 학습46단계에 연결 원리와 사용자 설정 순서를 기록했다.
+
+코드·문서 작성 완료, 사용자 확인 대기. 테스트·빌드·린트·설치·앱/서버 실행·브라우저 검증·HTTP/AI 호출·커밋·push·실제 배포·DNS 변경은 수행하지 않았다. 서비스/DB 생성일·실제 onrender 주소·DB 만료일은 아직 알 수 없다. DB 비밀번호·API 키는 기록하지 않았다. 사용자는 안내 문서에 따라 GitHub 반영 → 무료 DB/Web Service 생성 → 서버 환경변수 → API DNS/TLS → Vercel 환경변수·재배포를 수행한다. HTTPS·세션 쿠키·WS·방문자 분리·생산/분석 이력·유휴 후 연결을 직접 확인하며 정상 연결과 이력 보존을 기대한다. 다음은 사용자 배포 결과/오류에 따른 후속 작업이다. 기존 확인 대기는 유지한다.
+
+## 2026-10-12 (Asia/Seoul) — 누적 변경 GitHub 반영 요청
+
+사용자가 지금까지 변경사항 전체를 Git에 반영하도록 요청했다. 공장 환경 메뉴/공장 단위 분석 개편, UI 색감·문구 정돈, Render 무료 백엔드/DB 배포 준비 코드와 관련 안내·계획·학습 문서를 main에 함께 커밋해 origin으로 업로드한다. 실제 .env·비밀키·의존성·로컬 생성 파일은 기존 제외 규칙을 유지한다. 커밋/업로드 결과는 후속 기록에 남긴다. 테스트·빌드·린트·앱/서버 실행·브라우저 검증은 수행하지 않으며, 앱 동작·Render 배포·DNS 설정은 사용자 확인 대기다.

@@ -32,7 +32,7 @@
 
 
 /* Spatial labels: light footprint, detail only on focus. */
-.sceneLabel { --status-color: var(--color-text-muted); position: relative; min-width: 125px; padding: 9px 11px; border: 1px solid #a8bdcd38; border-radius: 8px; color: var(--color-text); background: linear-gradient(135deg, #21313be8, #0e1821ee); box-shadow: 0 6px 20px #02091140, inset 0 1px #ffffff08; white-space: nowrap; font-family: var(--font-body); text-align: left; }
+.sceneLabel { --status-color: var(--color-text-muted); position: relative; min-width: 125px; padding: 9px 11px; border: 1px solid var(--color-border); border-radius: var(--radius-control); color: var(--color-text); background: var(--color-hud); box-shadow: var(--shadow-hud); white-space: nowrap; font-family: var(--font-body); text-align: left; }
 .sceneLabel::before { content: ''; position: absolute; width: 1px; height: 13px; background: #b7c8d366; bottom: 100%; left: 20px; }
 .sceneLabel::after { content: ''; position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #b7c8d3; bottom: calc(100% + 12px); left: 18.5px; }
 .sceneLabel[data-status='PROCESSING'] { --status-color: var(--scene-processing); }
@@ -53,7 +53,7 @@
 .markerProgress { height: 2px; margin-top: 7px; overflow: hidden; border-radius: 2px; background: #c4dae015; }
 .markerProgress i { display: block; height: 100%; background: var(--status-color); }
 .markerEvidence { display: block; margin-top: 6px; font-size: 9px; color: var(--color-ai); }
-.zoneLabel { display: flex; align-items: center; gap: 13px; padding: 13px 15px; min-width: 220px; border: 1px solid #acc4d13b; border-radius: 9px; background: var(--gradient-panel); box-shadow: var(--shadow-hud); color: var(--color-text); text-align: left; font-family: var(--font-body); transition: border-color var(--motion-fast), transform var(--motion-fast); }
+.zoneLabel { display: flex; align-items: center; gap: 13px; padding: 13px 15px; min-width: 220px; border: 1px solid var(--color-border); border-radius: var(--radius-control); background: var(--gradient-panel); box-shadow: var(--shadow-hud); color: var(--color-text); text-align: left; font-family: var(--font-body); transition: border-color var(--motion-fast), transform var(--motion-fast); }
 .zoneNumber { display: grid; place-items: center; align-self: stretch; min-width: 34px; border-right: 1px solid var(--color-border); padding-right: 12px; color: var(--color-text-muted); font-size: 19px; font-weight: 350; }
 .zoneLabel > div > span { display: block; font-size: 8px; color: var(--color-text-muted); letter-spacing: 1px; margin-bottom: 3px; }
 .zoneLabel strong { display: block; font-size: 12px; font-weight: 550; }
@@ -69,10 +69,10 @@
 .toolbar { background: var(--gradient-panel); padding: 14px 18px; }.toolbar h2 { font-size: 13px; }
 .viewControls button { border-radius: var(--radius-control); min-height: 34px; font-size: 11px; }
 .layout { background-color: #101b26; background-size: 32px 32px; }
-.station { border-radius: 8px; padding: 13px 6px; border-color: var(--color-border); background: var(--gradient-panel); box-shadow: 0 5px 14px #0002; }
+.station { border-radius: var(--radius-control); padding: 13px 6px; border-color: var(--color-border); background: var(--gradient-panel); box-shadow: 0 5px 14px #0002; }
 .station.active { border-color: var(--color-accent); background: linear-gradient(140deg, #423928, #17212c); }
 .stationName { font-size: 12px; }.stationCode { color: var(--color-text-secondary); }.duration { margin-top: 7px; }
-.productDrawing { border: 1px solid var(--color-border); border-radius: 9px; background: var(--color-glass); }
+.productDrawing { border: 1px solid var(--color-border); border-radius: var(--radius-control); background: var(--color-glass); }
 .specification { gap: 15px; padding: 18px; }.specification dd { font-size: 13px; }
 @media (max-width: 760px) { .immersiveFallback { inset: 220px 16px 160px; }.stationName { font-size: 10px; }.zoneLabel { min-width: 164px; padding: 9px 11px; gap: 9px; }.zoneNumber { font-size: 16px; min-width: 25px; padding-right: 8px; }.zoneLabel strong { font-size: 10px; }.zoneLabel small { display: none; }.sceneLabel { min-width: 107px; padding: 7px 8px; }.markerNumber { width: 22px; height: 26px; font-size: 10px; }.markerHeading { gap: 6px; }.markerHeading strong { font-size: 10px; } }
 @media (max-height: 450px) { .immersiveFallback { inset: 130px 16px 100px; } }

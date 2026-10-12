@@ -7,6 +7,7 @@ const paths = {
   pause: 'M8 5v14M16 5v14',
   reset: 'M3 10a9 9 0 1 1 2 8M3 4v6h6',
   settings: 'M4 7h7m4 0h5M4 17h3m4 0h9M11 4v6M7 14v6',
+  analysis: 'M4 4h16v13H9l-5 4V4Zm4 4h8m-8 4h5',
   spark: 'm12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3',
   history: 'M5 5h14v16H5V5m4 4h6m-6 4h6m-6 4h4M9 2h6',
   info: 'M12 11v6m0-10v.1M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20',

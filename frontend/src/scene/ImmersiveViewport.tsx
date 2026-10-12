@@ -19,13 +19,13 @@ export function ImmersiveViewport({ state, stations, selectedId, parts, transfer
   onNavigate: (focus: SpatialFocus) => void
 }) {
   const fallback = <div className={styles.immersiveFallback}>
-    <p>{show2D ? '2D 생산라인' : '3D 장면을 표시할 수 없어 2D 배치도를 보여줍니다.'} · 설비를 선택해 조작할 수 있습니다. 구역 이동은 상단 탐색 메뉴를 사용하세요.</p>
+    <p>{show2D ? '2D 생산라인' : '3D 장면을 표시할 수 없어 2D 배치도를 보여줍니다.'} · 설비를 선택하면 정보를 표시합니다. 고장·복구는 좌측 공장 환경, 구역 이동은 공장 지도를 사용하세요.</p>
     <nav className={styles.campusMap} aria-label="전체 공장 구역 배치">{factoryZones.map(zone => <button key={zone.id} onClick={() => onNavigate({ kind: zone.id })} aria-pressed={focus.kind === zone.id}><span>{zone.number}</span><strong>{zone.title}</strong><small>{zone.id === 'line' ? '현재 생산 기능' : '정적 전시 · 기능 예정'}</small></button>)}</nav>
     <FactoryLayoutPreview stations={stations} selectedId={selectedId} onSelect={onSelect} />
   </div>
-  return <div className={styles.immersiveCanvas} aria-label="3D 공장. 좌클릭 드래그로 이동, 우클릭 드래그로 회전, 휠로 확대. 상단 탐색 메뉴에서도 설비를 선택할 수 있습니다.">
+  return <div className={styles.immersiveCanvas} aria-label="3D 공장. 좌클릭 드래그로 이동, 우클릭 드래그로 회전, 휠로 확대. 공장 지도에서도 설비를 선택할 수 있습니다. 고장과 복구는 좌측 공장 환경 메뉴를 사용하세요.">
     {show2D ? fallback : <SceneBoundary fallback={fallback}>
-      <Suspense fallback={<div className={styles.sceneLoading} role="status"><div className={styles.loadingContent}><Icon name="factory" size={32} /><strong>공장으로 들어가는 중</strong><span>3D 장면을 준비하고 있습니다.</span><i /></div></div>}>
+      <Suspense fallback={<div className={styles.sceneLoading} role="status"><div className={styles.loadingContent}><Icon name="factory" size={32} /><strong>공장 불러오는 중</strong><span>3D 모형을 불러오고 있습니다.</span><i /></div></div>}>
         <FactoryScene stations={stations} selectedId={selectedId} onSelect={onSelect}
           stationStates={state?.stations} dimensions={state?.configuration.chassis_dimensions_mm ?? chassisLine.chassisDimensionsMm}
           resetView={resetView} fallback={fallback} parts={parts} transfers={transfers} runId={state?.run_id}

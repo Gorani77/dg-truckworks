@@ -1,4 +1,5 @@
 import type { FactoryState, ProductionEvent } from './factory'
+import { apiUrl } from './url'
 
 type FactoryFrame = {
   type: 'factory_state'
@@ -9,7 +10,7 @@ type FactoryFrame = {
 type Heartbeat = { type: 'heartbeat'; protocol_version: 1 }
 
 export function factoryStreamUrl() {
-  const url = new URL('/api/factory/stream', window.location.href)
+  const url = apiUrl('/api/factory/stream')
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
   return url.toString()
 }
