@@ -860,3 +860,7 @@ truckworks/
 ### 2026-10-12 — Render 무료 백엔드·무료 PostgreSQL 체험 선택
 
 사용자가 Render 배포와 무료 PostgreSQL(30일 만료) 체험을 선택하고 프론트 주소 https://dg-truckworks.site 를 제공했다. API는 api.dg-truckworks.site 로 연결하도록 준비했다. HTTP/WS 배포 origin, credentials 포함, 서버 credential CORS, 배포 세션 준비 120초 대기와 Python 3.12·uv.lock 기반 Render 시작/migration 스크립트를 작성했다. RENDER_DEPLOYMENT.md에 서비스·DNS·환경변수·사용자 확인 절차를 기록했다. 코드·문서 작성 완료이며 서비스 생성·GitHub 업로드·실제 배포·DNS·사용자 동작/학습 확인은 대기다. 무료 DB 만료 후 유지 방법·유료 전환은 미확정이다. 테스트·빌드·린트·실행 검증은 수행하지 않았다.
+
+### 2026-10-12 — 공장 환경·UI·Render 준비 누적 변경 업로드
+
+사용자 요청으로 공장 환경 개편·UI 표현 정돈·Render 배포 준비와 관련 문서 42개 파일을 63b471d로 커밋하고 origin/main push 명령이 성공했다. 소스 업로드 완료이며 앱 동작·실제 Render 배포·DNS/환경변수·사용자 학습 확인 대기는 유지한다. 테스트·빌드·린트·실행 검증은 수행하지 않았다.

@@ -1111,3 +1111,7 @@ frontend/src/api/url.ts를 추가해 HTTP와 WebSocket의 VITE_API_ORIGIN 처리
 ## 2026-10-12 (Asia/Seoul) — 누적 변경 GitHub 반영 요청
 
 사용자가 지금까지 변경사항 전체를 Git에 반영하도록 요청했다. 공장 환경 메뉴/공장 단위 분석 개편, UI 색감·문구 정돈, Render 무료 백엔드/DB 배포 준비 코드와 관련 안내·계획·학습 문서를 main에 함께 커밋해 origin으로 업로드한다. 실제 .env·비밀키·의존성·로컬 생성 파일은 기존 제외 규칙을 유지한다. 커밋/업로드 결과는 후속 기록에 남긴다. 테스트·빌드·린트·앱/서버 실행·브라우저 검증은 수행하지 않으며, 앱 동작·Render 배포·DNS 설정은 사용자 확인 대기다.
+
+### 누적 변경 업로드 결과
+
+42개 파일을 커밋 63b471d (feat: refine factory controls and UI and prepare Render deployment)로 기록하고 origin/main push 명령이 성공했다. 공장 환경 개편·UI 정돈·Render 준비 코드 및 관련 기록의 GitHub 반영 완료. GitHub 화면·자동 배포 결과·앱 동작은 사용자 확인 대기이며 Render 서비스/DB 생성·DNS·환경변수 입력은 별도 진행해야 한다. 테스트·빌드·린트·실행 검증은 수행하지 않았다. 다음은 RENDER_DEPLOYMENT.md에 따른 사용자 Render 배포다.
