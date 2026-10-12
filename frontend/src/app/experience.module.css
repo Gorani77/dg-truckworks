@@ -156,3 +156,14 @@
   .agentLauncher { min-height: 50px; padding-block: 8px; box-shadow: none; }
   .interactionHint { z-index: 31; bottom: 7px; font-size: 10px; }
 }
+
+.serverStartup { position: absolute; z-index: 30; top: 180px; left: 50%; transform: translateX(-50%); width: min(420px, calc(100% - 32px)); box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 20px; padding: 20px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 4px; color: var(--color-text); box-shadow: 0 8px 24px #0003; pointer-events: none; }
+.serverStartup strong { font-size: 15px; font-weight: 600; }
+.serverStartup p { margin: 8px 0 0; font-size: 12px; line-height: 1.6; color: var(--color-text-secondary); word-break: keep-all; }
+.serverStartup small { grid-column: 1 / -1; color: var(--color-text-muted); font-size: 11px; line-height: 1.5; }
+.startupCountdown { display: flex; align-items: baseline; align-self: center; gap: 4px; color: var(--color-text-secondary); }
+.startupCountdown b { font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.startupCountdown span { font-size: 12px; }
+@media (max-width: 760px) { .serverStartup { top: 150px; padding: 16px; gap: 10px 12px; }.startupCountdown b { font-size: 28px; } }
+@media (max-height: 450px) { .serverStartup { top: 72px; padding: 12px 16px; }.serverStartup p { margin-top: 4px; } }
+.connection[data-starting='true'] i { background: var(--color-text-muted); box-shadow: none; }

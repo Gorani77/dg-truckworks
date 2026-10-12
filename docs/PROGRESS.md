@@ -1115,3 +1115,25 @@ frontend/src/api/url.ts를 추가해 HTTP와 WebSocket의 VITE_API_ORIGIN 처리
 ### 누적 변경 업로드 결과
 
 42개 파일을 커밋 63b471d (feat: refine factory controls and UI and prepare Render deployment)로 기록하고 origin/main push 명령이 성공했다. 공장 환경 개편·UI 정돈·Render 준비 코드 및 관련 기록의 GitHub 반영 완료. GitHub 화면·자동 배포 결과·앱 동작은 사용자 확인 대기이며 Render 서비스/DB 생성·DNS·환경변수 입력은 별도 진행해야 한다. 테스트·빌드·린트·실행 검증은 수행하지 않았다. 다음은 RENDER_DEPLOYMENT.md에 따른 사용자 Render 배포다.
+
+## 2026-10-12 (Asia/Seoul) — 배포 후 연결 사용자 보고·3D DOM 오류 조사
+
+사용자가 Render DB/Web Service·API DNS·Vercel 환경변수 설정 화면을 공유했고 연결됐다고 보고했다. 실제 접속 origin은 https://www.dg-truckworks.site 였으므로 Render CORS에 루트/www 두 주소를 허용하도록 안내했고 사용자가 수정 화면을 공유했다. 최신 사용자 콘솔 로그에는 이전 CORS/403은 없고 inspector unload 경고와 FactoryScene → React root unmount → removeChild NotFoundError가 남았다. 이는 제공된 로그 범위의 관찰이며 생산·AI·이력 전체 사용자 확인 완료는 아니다.
+
+FactoryScene·ImmersiveViewport·Html 사용처·로컬 drei Html 구현과 upstream 소스를 읽었다. 장면의 Html 라벨은 별도 React root를 생성/정리하며 전달된 스택과 관련된 후보 경로다. 실패한 DOM을 누가 변경했는지, 브라우저 번역/확장·검사 도구 영향인지 앱/라이브러리 생명주기 문제인지는 미확정이다. 앱 코드 변경·의존성 교체·테스트·빌드·실행·브라우저 검증은 수행하지 않았다. 사용자에게 확장 기능 없는 시크릿 창과 원문 표시에서 같은 동작의 오류 재발 여부를 구분하도록 안내한다. 다음은 이 결과에 따라 수정 범위와 선택지를 정하는 단계다. unload 경고와 removeChild 오류를 같은 원인으로 단정하지 않는다.
+
+### 시크릿 창에서도 removeChild 재발 — 수정 범위 선택 대기
+
+사용자가 시크릿 창에서도 같은 React removeChild NotFoundError가 발생한 로그를 제공했다. 해당 로그에는 inspector 경고가 없으므로 inspector 경고와 이 오류를 동일 원인으로 취급하지 않는다. 시크릿에서도 재발한 사실만으로 번역/모든 확장 영향이 완전히 배제됐다고 단정하지 않는다.
+
+추가 코드 읽기에서 구역/설비 Html 라벨이 선택·hover·compact 조건에 따라 생성/제거되고, drei Html이 별도 React root를 만들어 cleanup에서 unmount하는 경로를 읽었다. 앱 소스에서 직접 removeChild를 호출하는 코드는 찾지 못했다. 실제 실패한 노드·최초 유발 동작·생명주기 충돌 원인은 아직 미확정이며 동작 검증은 수행하지 않았다.
+
+제안 A(추천): 기존 Html을 유지하면서 라벨 삽입 영역을 분리·고정하고 빈번한 조건부 생성/제거를 표시 전환으로 바꾸는 제한된 수정. 표시/hover 회귀 확인이 필요하고 근본 원인 해결 여부는 사용자 재현 결과로 판단한다. 제안 B: 장면 이름표를 일반 React overlay로 옮겨 별도 root 생성/정리 경로를 제거하는 구조 개편. 투영 위치·클릭·카메라 추적 구현 범위와 확인 항목이 커진다. 사용자 지침에 따라 기존 배포 준비에서 장면 구조 수정으로 범위가 바뀌므로 선택 전 앱 코드는 수정하지 않는다. 학습 단계는 구현/설계 확정 후 작성한다.
+
+## 2026-10-12 (Asia/Seoul) — 첫 연결 서버 시작 안내와 100초 카운트다운
+
+사용자는 Render 유휴 후 첫 방문에서 서버 연결 안 됨 대신 서버 시작 중과 100초 카운트다운을 표시하도록 요청했다. useFactoryConnection.ts에 첫 연결용 마감 시각·남은 시간·첫 상태 수신 여부를 추가했다. 매초 Date.now 기반으로 남은 시간을 계산해 비활성 탭의 interval 지연을 반영하고, 재시도마다 시간을 재설정하지 않는다. 최초 유효 factory_state 수신 시 타이머를 정리하고 안내를 없앤다. 0초에서도 기존 자동 재연결을 이어가며 지연 안내로 전환한다. 연결 후 단절에는 초기 카운트다운을 다시 시작하지 않는다.
+
+ServerStartupNotice.tsx와 experience.module.css에 서버 시작/연결 지연 안내·100초 숫자 표시·작은 화면 배치를 작성하고 SimulationExperience/SimulationHud에 연결했다. 숫자 매초 변경은 스크린리더의 반복 알림을 끄고 상태 문구를 별도로 전달한다. session.ts는 SessionPreparationError로 명시적 4xx를 구분한다. 408/429를 제외한 명시적 거절은 대기 안내를 종료하고 오류를 보여준다. CORS에 의해 응답이 가려진 네트워크 오류는 브라우저에서 상태를 구분할 수 없어 초기 대기 후 지연 안내가 될 수 있다. 세션 요청 120초 제한과 생산/유료 AI 명령 재실행 금지, 기존 재연결 정책은 유지한다.
+
+카운트다운은 실제 서버 시작 측정/완료 보장 시간이 아닌 첫 연결 대기 안내다. 코드·문서 작성 완료이며 테스트·빌드·린트·앱/서버 실행·HTTP/브라우저 검증·커밋·push·배포는 수행하지 않았다. 사용자 확인: 첫 진입 100초 감소, 준비된 서버는 즉시 안내 종료, 초기 일시 실패/재시도 시 빨간 연결 오류와 숫자 리셋 없음, 0초 이후 지연 안내와 자동 연결, 403 등 명시 거절의 오류 표시, 연결 후 단절의 기존 오류 표시, 320px/390px와 낮은 화면의 안내 가독성. 필요 시 frontend에서 npm run build/lint를 직접 수행한다. 다음은 사용자 확인과 요청 시 GitHub 반영·Vercel 재배포이며 3D removeChild 수정안은 미선택 상태를 유지한다.

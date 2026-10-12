@@ -10,8 +10,9 @@ import styles from './experience.module.css'
 export type ScenePanel = 'agent' | 'selection' | 'controls' | 'campus' | 'records' | 'about' | null
 
 export function SimulationHud({ state, connection, sending, focus, stations, onNavigate, onPanel, activePanel,
-  onStart, onPause, onResume, onResetView, show2D, onToggle2D, analyzing }: {
+  onStart, onPause, onResume, onResetView, show2D, onToggle2D, analyzing, startupSeconds }: {
   state: FactoryState | null; connection: 'loading' | 'connected' | 'offline'; sending: boolean
+  startupSeconds: number | null
   focus: SpatialFocus; stations: readonly StationDefinition[]; onNavigate: (focus: SpatialFocus) => void
   onPanel: (panel: ScenePanel) => void; activePanel: ScenePanel; onStart: () => void; onPause: () => void; onResume: () => void
   onResetView: () => void; show2D: boolean; onToggle2D: () => void; analyzing: boolean
@@ -29,7 +30,7 @@ export function SimulationHud({ state, connection, sending, focus, stations, onN
         <span className={styles.brandMark}><Icon name="factory" size={22} /></span>
         <span>TruckWorks<small>공장 시뮬레이션</small></span>
       </button>
-      <span className={styles.connection} data-connected={connection === 'connected'}><i />{connection === 'connected' ? '연결됨' : connection === 'loading' ? '연결 중' : '연결 끊김'}</span>
+      <span className={styles.connection} data-connected={connection === 'connected'} data-starting={startupSeconds !== null}><i />{connection === 'connected' ? '연결됨' : startupSeconds !== null ? startupSeconds > 0 ? '서버 시작 중' : '연결 지연' : connection === 'loading' ? '연결 중' : '연결 끊김'}</span>
       <nav className={styles.topActions} aria-label="공장 메뉴">
         <button aria-pressed={activePanel === 'campus'} onClick={() => onPanel(activePanel === 'campus' ? null : 'campus')}><Icon name="compass" />공장 지도</button>
         <button aria-pressed={activePanel === 'records'} onClick={() => onPanel(activePanel === 'records' ? null : 'records')}><Icon name="history" />기록</button>

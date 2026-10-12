@@ -4,12 +4,25 @@ import { apiUrl, sessionPrepareTimeout } from './url'
 
 let preparing: Promise<void> | null = null
 
+export class SessionPreparationError extends Error {
+  readonly status: number
+
+  constructor(status: number) {
+    super(`방문자 공장 준비 요청이 거절됐습니다 (${status}). 새로고침 후에도 계속되면 연결 설정을 확인하세요.`)
+    this.name = 'SessionPreparationError'
+    this.status = status
+  }
+}
+
 async function prepare(): Promise<void> {
   const response = await fetch(apiUrl('/api/session'), {
     method: 'POST', credentials: 'include', cache: 'no-store',
     headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(sessionPrepareTimeout()),
   })
-  if (!response.ok) throw new Error('방문자 공장을 준비하지 못했습니다. 서버 연결을 확인하세요.')
+  if (!response.ok) {
+    if (response.status >= 400 && response.status < 500) throw new SessionPreparationError(response.status)
+    throw new Error('방문자 공장을 준비하지 못했습니다. 서버 연결을 확인하세요.')
+  }
 }
 
 export function ensureVisitorSession(): Promise<void> {

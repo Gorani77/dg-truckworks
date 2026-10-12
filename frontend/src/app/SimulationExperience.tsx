@@ -19,6 +19,7 @@ import type { SpatialFocus } from '../scene/spatialNavigation'
 import { zoneLabels } from '../scene/spatialNavigation'
 import { SimulationHud } from './SimulationHud'
 import { SceneDrawer } from './SceneDrawer'
+import { ServerStartupNotice } from './ServerStartupNotice'
 import { Icon } from '../components/Icon'
 import { useSceneNavigation } from './useSceneNavigation'
 import styles from './experience.module.css'
@@ -72,11 +73,12 @@ export function SimulationExperience({ factory }: { factory: ReturnType<typeof u
     <ImmersiveViewport state={state} stations={stations} selectedId={selectedStation.id}
       parts={parts} transfers={transfers} focus={scene.focus} relatedIds={relatedIds} resetView={scene.resetView}
       show2D={scene.show2D} onSelect={selectInScene} onSelectPart={(id) => navigate({ kind: 'part', id })} onNavigate={navigate} />
-    <SimulationHud state={state} connection={factory.connection} sending={factory.sending} focus={scene.focus}
+    <SimulationHud state={state} connection={factory.connection} startupSeconds={factory.startupSeconds} sending={factory.sending} focus={scene.focus}
       stations={stations} onNavigate={navigate} onPanel={scene.setPanel} activePanel={scene.panel} onStart={() => startProduction()}
       onPause={() => { void factory.pause() }} onResume={() => { void factory.resume() }}
       onResetView={scene.resetCamera} show2D={scene.show2D} onToggle2D={scene.toggle2D} analyzing={agent.loading} />
 
+    {factory.startupSeconds !== null && <ServerStartupNotice seconds={factory.startupSeconds} />}
     {tour.step !== 'off' && scene.panel === null && <div className={styles.leftOverlay}>
       <GuidedExperience step={tour.step} state={state} sending={factory.sending} onAction={guideAction} onEnd={tour.end} />
     </div>}
