@@ -1137,3 +1137,7 @@ FactoryScene·ImmersiveViewport·Html 사용처·로컬 drei Html 구현과 upst
 ServerStartupNotice.tsx와 experience.module.css에 서버 시작/연결 지연 안내·100초 숫자 표시·작은 화면 배치를 작성하고 SimulationExperience/SimulationHud에 연결했다. 숫자 매초 변경은 스크린리더의 반복 알림을 끄고 상태 문구를 별도로 전달한다. session.ts는 SessionPreparationError로 명시적 4xx를 구분한다. 408/429를 제외한 명시적 거절은 대기 안내를 종료하고 오류를 보여준다. CORS에 의해 응답이 가려진 네트워크 오류는 브라우저에서 상태를 구분할 수 없어 초기 대기 후 지연 안내가 될 수 있다. 세션 요청 120초 제한과 생산/유료 AI 명령 재실행 금지, 기존 재연결 정책은 유지한다.
 
 카운트다운은 실제 서버 시작 측정/완료 보장 시간이 아닌 첫 연결 대기 안내다. 코드·문서 작성 완료이며 테스트·빌드·린트·앱/서버 실행·HTTP/브라우저 검증·커밋·push·배포는 수행하지 않았다. 사용자 확인: 첫 진입 100초 감소, 준비된 서버는 즉시 안내 종료, 초기 일시 실패/재시도 시 빨간 연결 오류와 숫자 리셋 없음, 0초 이후 지연 안내와 자동 연결, 403 등 명시 거절의 오류 표시, 연결 후 단절의 기존 오류 표시, 320px/390px와 낮은 화면의 안내 가독성. 필요 시 frontend에서 npm run build/lint를 직접 수행한다. 다음은 사용자 확인과 요청 시 GitHub 반영·Vercel 재배포이며 3D removeChild 수정안은 미선택 상태를 유지한다.
+
+### 2026-10-12 — 서버 시작 안내 GitHub 업로드 결과
+
+사용자 요청으로 서버 시작 안내·100초 카운트다운과 조사/계획/학습/배포 기록 10개 파일을 2d0e411 (feat: show server startup countdown on first connection)로 커밋했고 origin/main push 명령이 성공했다. 코드 업로드 완료, Vercel 배포 결과와 사용자 화면/동작 확인은 대기다. 테스트·빌드·린트·실행 검증은 수행하지 않았다. 다음은 사용자 Vercel 배포 완료 후 첫 연결·조기 연결·100초 초과·오류 구분 확인이다. 3D removeChild 수정안 선택 대기는 유지한다.
